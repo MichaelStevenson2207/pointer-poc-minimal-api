@@ -8,9 +8,10 @@ namespace pointer_poc_minimal_api.Endpoints.Pointer
         private const string BuildingStatus = "BUILT";
         private const string AddressStatus = "APPROVED";
         private const int MaxPostCodeLength = 7;
+
         public static IEndpointRouteBuilder MapGetPointerAddressesEndpoint(this IEndpointRouteBuilder app)
         {
-            app.MapGet("GetAddressByPostcode", async (string postCode, PointerContext context, CancellationToken cancellationToken) =>
+            app.MapGet("api/pointer/GetAddressByPostcode", async (string postCode, PointerContext context, CancellationToken cancellationToken) =>
             {
                 var pointerModel = await context.Pointer.AsNoTracking().Where(i => i.Postcode == FormatPostCode(postCode) && i.BuildingStatus == BuildingStatus && i.AddressStatus == AddressStatus).OrderBy(i => i.BuildingNumber).ToListAsync(cancellationToken: cancellationToken);
 
@@ -20,9 +21,11 @@ namespace pointer_poc_minimal_api.Endpoints.Pointer
                 }
 
                 return TypedResults.Ok(pointerModel);
-            })/*.RequireAuthorization()*/; // Uncomment to use authentication
+            }).Produces<Data.Entities.Pointer>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .Produces(StatusCodes.Status401Unauthorized)/*.RequireAuthorization()*/; // Uncomment to use authentication
 
-            app.MapGet("GetByBuildingNumberPostCode", async (string postCode, string buildingNumber, PointerContext context, CancellationToken cancellationToken) =>
+            app.MapGet("api/pointer/GetByBuildingNumberPostCode", async (string postCode, string buildingNumber, PointerContext context, CancellationToken cancellationToken) =>
             {
                 var pointerModel = await context.Pointer.AsNoTracking().FirstOrDefaultAsync(i => i.Postcode == FormatPostCode(postCode) && i.BuildingNumber == buildingNumber.ToUpper() && i.BuildingStatus == BuildingStatus && i.AddressStatus == AddressStatus, cancellationToken: cancellationToken);
 
@@ -32,7 +35,9 @@ namespace pointer_poc_minimal_api.Endpoints.Pointer
                 }
 
                 return TypedResults.Ok(pointerModel);
-            })/*.RequireAuthorization()*/; // Uncomment to use authentication
+            }).Produces<Data.Entities.Pointer>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .Produces(StatusCodes.Status401Unauthorized)/*.RequireAuthorization()*/; // Uncomment to use authentication
 
             return app;
         }
