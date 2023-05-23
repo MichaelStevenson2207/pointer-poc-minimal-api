@@ -20,7 +20,7 @@ namespace pointer_poc_minimal_api.Endpoints.Pointer
                 }
 
                 return TypedResults.Ok(pointerModel);
-            }).RequireAuthorization();
+            })/*.RequireAuthorization()*/; // Uncomment to use authentication
 
             app.MapGet("GetByBuildingNumberPostCode", async (string postCode, string buildingNumber, PointerContext context, CancellationToken cancellationToken) =>
             {
@@ -32,7 +32,7 @@ namespace pointer_poc_minimal_api.Endpoints.Pointer
                 }
 
                 return TypedResults.Ok(pointerModel);
-            }).RequireAuthorization();
+            })/*.RequireAuthorization()*/; // Uncomment to use authentication
 
             return app;
         }
