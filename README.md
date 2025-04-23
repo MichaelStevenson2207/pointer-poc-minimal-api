@@ -40,3 +40,4 @@ e.g.
                 return TypedResults.Ok(pointerModel);
             })/*.RequireAuthorization()*/; // Uncomment to use authentication
 
+TEST
